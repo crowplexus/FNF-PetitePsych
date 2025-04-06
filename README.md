@@ -11,6 +11,7 @@ A fork of [Psych Engine](https://github.com/ShadowMario/FNF-PsychEngine) that ai
 - Added "Nigth" easter egg to Title Screen (from Base Game)
 - Haxe Library versions are now fixed, please use the setup files inside the setup folder.
 - Removed Week-specific Events such as Dadbattle Spotlight, Philly Glow, Kill Henchmen, etc…
+- Remove most base game files (aside from the ones that are dependencies)
 - Removed Automatic Updater
 
 ## Installation:
