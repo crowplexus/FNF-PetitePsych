@@ -1,9 +1,5 @@
 package states;
 
-import backend.WeekData;
-import backend.Highscore;
-
-import flixel.input.keyboard.FlxKey;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.graphics.frames.FlxFrame;
@@ -16,9 +12,6 @@ import openfl.display.Bitmap;
 import openfl.display.BitmapData;
 
 import shaders.ColorSwap;
-
-import states.StoryMenuState;
-import states.MainMenuState;
 
 typedef TitleData =
 {
@@ -34,10 +27,6 @@ typedef TitleData =
 
 class TitleState extends MusicBeatState
 {
-	public static var muteKeys:Array<FlxKey> = [FlxKey.ZERO];
-	public static var volumeDownKeys:Array<FlxKey> = [FlxKey.NUMPADMINUS, FlxKey.MINUS];
-	public static var volumeUpKeys:Array<FlxKey> = [FlxKey.NUMPADPLUS, FlxKey.PLUS];
-
 	public static var initialized:Bool = false;
 
 	var blackScreen:FlxSprite;
@@ -54,39 +43,18 @@ class TitleState extends MusicBeatState
 	var skippedIntro:Bool = false;
 	var titleJSON:TitleData;
 
-	override public function create():Void
+	override public function create()
 	{
-		Paths.clearStoredMemory();
-
-		#if LUA_ALLOWED
-		Mods.pushGlobalMods();
-		#end
-		Mods.loadTopMod();
-
-		FlxG.fixedTimestep = false;
-		FlxG.game.focusLostFramerate = 60;
-		FlxG.keys.preventDefaultKeys = [TAB];
-
-		curWacky = FlxG.random.getObject(getIntroTextShit());
-
 		super.create();
 
-		FlxG.save.bind('funkin', CoolUtil.getSavePath());
-		Highscore.load();
-
-		// IGNORE THIS!!!
+		curWacky = FlxG.random.getObject(getIntroTextShit());
 		titleJSON = tjson.TJSON.parse(Paths.getTextFromFile('images/gfDanceTitle.json'));
 
 		if(!initialized)
 		{
-			if(FlxG.save.data != null && FlxG.save.data.fullscreen)
-				FlxG.fullscreen = FlxG.save.data.fullscreen;
 			persistentUpdate = true;
 			persistentDraw = true;
 		}
-
-		if (FlxG.save.data.weekCompleted != null)
-			StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
 
 		FlxG.mouse.visible = false;
 
