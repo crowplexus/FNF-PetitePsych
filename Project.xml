@@ -25,7 +25,6 @@
 	<define name="LUA_ALLOWED" if="desktop" />
 	<define name="ACHIEVEMENTS_ALLOWED" />
 	<define name="DISCORD_ALLOWED" />
-	<define name="PSYCH_WATERMARKS"/> <!-- DELETE THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
 	<!-- <define name="VIDEOS_ALLOWED" if="desktop || android" unless="32bits"/> -->
 
 	<!-- ____________________________ Window Settings ___________________________ -->
