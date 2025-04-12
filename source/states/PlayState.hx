@@ -3429,21 +3429,36 @@ class PlayState extends MusicBeatState
 		var usedPractice:Bool = (ClientPrefs.getGameplaySetting('practice') || ClientPrefs.getGameplaySetting('botplay'));
 		if(cpuControlled) return;
 
-		for (name in achievesToCheck) {
+		for (name in achievesToCheck) 
+		{
 			if(!Achievements.exists(name)) continue;
-			var unlock:Bool = switch(name)
+
+			var unlock:Bool = false;
+			if (name != WeekData.getWeekFileName() + '_nomiss') // common achievements
 			{
-				case 'ur_bad': ratingPercent < 0.2 && !practiceMode;
-				case 'ur_good': ratingPercent >= 1 && !usedPractice;
-				case 'oversinging': boyfriend.holdTimer >= 10 && !usedPractice;
-				case 'hype': !boyfriendIdled && !usedPractice;
-				case 'two_keys': !usedPractice && keysPressed.length <= 2;
-				case 'toastie': !ClientPrefs.data.cacheOnGPU && !ClientPrefs.data.shaders && ClientPrefs.data.lowQuality && !ClientPrefs.data.antialiasing;
-				// this is for FC achievements
-				case _ => WeekData.getWeekFileName() + '_nomiss':
-					isStoryMode && campaignMisses + songMisses < 1 && Difficulty.getString().toUpperCase() == 'HARD'
-						&& storyPlaylist.length <= 1 && !changedDifficulty && !usedPractice;
+				switch(name)
+				{
+					case 'ur_bad': 
+						unlock = (ratingPercent < 0.2 && !practiceMode);
+					case 'ur_good': 
+						unlock = (ratingPercent >= 1 && !usedPractice);
+					case 'oversinging': 
+						unlock = (boyfriend.holdTimer >= 10 && !usedPractice);
+					case 'hype': 
+						unlock = (!boyfriendIdled && !usedPractice);
+					case 'two_keys': 
+						unlock = (!usedPractice && keysPressed.length <= 2);
+					case 'toastie': 
+						unlock = (!ClientPrefs.data.cacheOnGPU && !ClientPrefs.data.shaders && ClientPrefs.data.lowQuality && !ClientPrefs.data.antialiasing);
+				}
 			}
+			else // FC achievements
+			{
+				if (isStoryMode && campaignMisses + songMisses < 1 && Difficulty.getString().toUpperCase() == 'HARD'
+					&& storyPlaylist.length <= 1 && !changedDifficulty && !usedPractice)
+					unlock = true;
+			}
+
 			if(unlock) Achievements.unlock(name);
 		}
 	}
