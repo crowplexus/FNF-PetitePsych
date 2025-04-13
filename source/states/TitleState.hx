@@ -1,24 +1,13 @@
 package states;
 
-import backend.WeekData;
-import backend.Highscore;
-
-import flixel.input.keyboard.FlxKey;
 import flixel.addons.transition.FlxTransitionableState;
-import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.graphics.frames.FlxFrame;
 import flixel.group.FlxGroup;
 import flixel.input.gamepad.FlxGamepad;
 import haxe.Json;
 
 import openfl.Assets;
-import openfl.display.Bitmap;
-import openfl.display.BitmapData;
-
 import shaders.ColorSwap;
-
-import states.StoryMenuState;
-import states.MainMenuState;
 
 typedef TitleData =
 {
@@ -34,10 +23,6 @@ typedef TitleData =
 
 class TitleState extends MusicBeatState
 {
-	public static var muteKeys:Array<FlxKey> = [FlxKey.ZERO];
-	public static var volumeDownKeys:Array<FlxKey> = [FlxKey.NUMPADMINUS, FlxKey.MINUS];
-	public static var volumeUpKeys:Array<FlxKey> = [FlxKey.NUMPADPLUS, FlxKey.PLUS];
-
 	public static var initialized:Bool = false;
 
 	var blackScreen:FlxSprite;
@@ -54,39 +39,18 @@ class TitleState extends MusicBeatState
 	var skippedIntro:Bool = false;
 	var titleJSON:TitleData;
 
-	override public function create():Void
+	override public function create()
 	{
-		Paths.clearStoredMemory();
-
-		#if LUA_ALLOWED
-		Mods.pushGlobalMods();
-		#end
-		Mods.loadTopMod();
-
-		FlxG.fixedTimestep = false;
-		FlxG.game.focusLostFramerate = 60;
-		FlxG.keys.preventDefaultKeys = [TAB];
-
-		curWacky = FlxG.random.getObject(getIntroTextShit());
-
 		super.create();
 
-		FlxG.save.bind('funkin', CoolUtil.getSavePath());
-		Highscore.load();
-
-		// IGNORE THIS!!!
+		curWacky = FlxG.random.getObject(getIntroTextShit());
 		titleJSON = tjson.TJSON.parse(Paths.getTextFromFile('images/gfDanceTitle.json'));
 
 		if(!initialized)
 		{
-			if(FlxG.save.data != null && FlxG.save.data.fullscreen)
-				FlxG.fullscreen = FlxG.save.data.fullscreen;
 			persistentUpdate = true;
 			persistentDraw = true;
 		}
-
-		if (FlxG.save.data.weekCompleted != null)
-			StoryMenuState.weekCompleted = FlxG.save.data.weekCompleted;
 
 		FlxG.mouse.visible = false;
 
@@ -329,26 +293,13 @@ class TitleState extends MusicBeatState
 					FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
 					FlxG.sound.music.fadeIn(4, 0, 0.7);
 				case 2:
-					#if PSYCH_WATERMARKS
-					createCoolText(['Psych Engine by'], 40);
-					#else
 					createCoolText(['The', 'Funkin Crew Inc']);
-					#end
 				case 4:
-					#if PSYCH_WATERMARKS
-					addMoreText('Shadow Mario', 40);
-					addMoreText('Riveren', 40);
-					#else
 					addMoreText('presents');
-					#end
 				case 5:
 					deleteCoolText();
 				case 6:
-					#if PSYCH_WATERMARKS
-					createCoolText(['Not associated', 'with'], -40);
-					#else
 					createCoolText(['In association', 'with'], -40);
-					#end
 				case 8:
 					addMoreText('newgrounds', -40);
 					ngSpr.visible = true;

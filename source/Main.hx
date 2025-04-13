@@ -7,6 +7,7 @@ import android.content.Context;
 import backend.FPSCounter;
 
 import flixel.graphics.FlxGraphic;
+import flixel.input.keyboard.FlxKey;
 import flixel.FlxGame;
 import flixel.FlxState;
 import haxe.io.Path;
@@ -38,7 +39,7 @@ import haxe.io.Path;
 
 class Main extends Sprite
 {
-	var game = {
+	static var game = {
 		width: 1280, // WINDOW width
 		height: 720, // WINDOW height
 		initialState: TitleState, // initial game state
@@ -49,6 +50,10 @@ class Main extends Sprite
 	};
 
 	public static var fpsVar:FPSCounter;
+
+	public static var muteKeys:Array<FlxKey> = [FlxKey.ZERO];
+	public static var volumeDownKeys:Array<FlxKey> = [FlxKey.NUMPADMINUS, FlxKey.MINUS];
+	public static var volumeUpKeys:Array<FlxKey> = [FlxKey.NUMPADPLUS, FlxKey.PLUS];
 
 	// You can pretty much ignore everything from here on - your code should go in your states.
 
@@ -103,10 +108,8 @@ class Main extends Sprite
 		}
 	
 		#if LUA_ALLOWED Lua.set_callbacks_function(cpp.Callable.fromStaticFunction(psychlua.CallbackHandler.call)); #end
-		Controls.instance = new Controls();
-		ClientPrefs.loadDefaultKeys();
-		#if ACHIEVEMENTS_ALLOWED Achievements.load(); #end
-		addChild(new FlxGame(game.width, game.height, game.initialState, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
+		
+		addChild(new FlxGame(game.width, game.height, InitState, #if (flixel < "5.0.0") game.zoom, #end game.framerate, game.framerate, game.skipSplash, game.startFullscreen));
 
 		#if !mobile
 		fpsVar = new FPSCounter(10, 3, 0xFFFFFF);
@@ -123,17 +126,8 @@ class Main extends Sprite
 		Lib.current.stage.window.setIcon(icon);
 		#end
 
-		#if html5
-		FlxG.autoPause = false;
-		FlxG.mouse.visible = false;
-		#end
-		
 		#if CRASH_HANDLER
 		Lib.current.loaderInfo.uncaughtErrorEvents.addEventListener(UncaughtErrorEvent.UNCAUGHT_ERROR, onCrash);
-		#end
-
-		#if DISCORD_ALLOWED
-		DiscordClient.prepare();
 		#end
 
 		// shader coords fix
